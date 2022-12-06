@@ -1,0 +1,10 @@
+name: NeoPPRs
+author: Neoblade298
+main: me.neoblade298.neopprs.Main
+version: 1.01
+api-version: 1.14
+depend: [NeoCore]
+commands:
+  ppr:
+    description: Base commands
+    usage: /ppr
