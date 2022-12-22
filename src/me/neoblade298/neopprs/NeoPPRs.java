@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements org.bukkit.event.Listener {
+public class NeoPPRs extends JavaPlugin implements org.bukkit.event.Listener {
 	
 	static HashMap<String, PPR> pprs;
 	static HashMap<String, String> uuids;
@@ -20,6 +20,7 @@ public class Main extends JavaPlugin implements org.bukkit.event.Listener {
 	static String sqlUser = "neoblade298";
 	static String sqlPass = "7H56480g09&Z01pz";
 	static String connection = "jdbc:mysql://66.70.180.136:3306/MLMC?useSSL=false";
+	private static NeoPPRs inst;
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoPPRs Enabled");
@@ -28,7 +29,7 @@ public class Main extends JavaPlugin implements org.bukkit.event.Listener {
 		// Get next available IDs from SQL
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+			Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select MAX(id) from neopprs_pprs");
 			while (rs.next()) {
@@ -52,6 +53,7 @@ public class Main extends JavaPlugin implements org.bukkit.event.Listener {
 	    
 	    // Get command listener
 	    this.getCommand("ppr").setExecutor(new Commands(this));
+	    inst = this;
 	}
 	
 	public void onDisable() {
@@ -70,7 +72,7 @@ public class Main extends JavaPlugin implements org.bukkit.event.Listener {
 	public void viewPlayer(CommandSender s, String user, boolean creatingPPR) {
 		boolean noError = false;
 		try{
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+			Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 			Statement stmt = con.createStatement();
 			ResultSet rs;
 			
@@ -132,6 +134,10 @@ public class Main extends JavaPlugin implements org.bukkit.event.Listener {
 			e.printStackTrace();
 			s.sendMessage("§4[§c§lMLMC§4] §cSomething went wrong! Report to neo and don't use the plugin anymore!");
 		}
+	}
+	
+	public static NeoPPRs inst() {
+		return inst;
 	}
 	
 }

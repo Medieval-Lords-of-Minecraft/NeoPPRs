@@ -19,10 +19,10 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.util.Util;
 
 public class Commands implements CommandExecutor {
-	Main main;
+	NeoPPRs main;
 	private static DateFormat dateformat = new SimpleDateFormat("MM-dd-yy");
 
-	public Commands(Main main) {
+	public Commands(NeoPPRs main) {
 		this.main = main;
 	}
 
@@ -31,8 +31,8 @@ public class Commands implements CommandExecutor {
 	public boolean onCommand(CommandSender s, Command cmd, String lbl, String[] args) {
 		if (!(s instanceof Player)) {
 			if (args.length > 1 && args[0].equalsIgnoreCase("auto")) {
-				PPR ppr = new PPR(Main.nextPPR, "Console");
-				Main.nextPPR++;
+				PPR ppr = new PPR(NeoPPRs.nextPPR, "Console");
+				NeoPPRs.nextPPR++;
 				ppr.setUser(args[1]);
 				ppr.setOffense("Banned word");
 				ppr.setAction("Automuted by bot");
@@ -68,31 +68,31 @@ public class Commands implements CommandExecutor {
 				}
 				if (args.length > 1 && args[0].equalsIgnoreCase("create")) {
 					if (args.length == 2) {
-						if (Main.pprs.containsKey(author)) {
+						if (NeoPPRs.pprs.containsKey(author)) {
 							s.sendMessage("§4[§c§lMLMC§4] §7You are already creating a PPR! §c/ppr view");
 						}
 						else {
 							main.viewPlayer(s, args[1], true);
 							s.sendMessage("§4[§c§lMLMC§4] §7You entered PPR creation mode!");
-							PPR ppr = new PPR(Main.nextPPR, author);
-							Main.nextPPR++;
-							Main.pprs.put(author, ppr);
-							Main.isModifying.put(author, false);
+							PPR ppr = new PPR(NeoPPRs.nextPPR, author);
+							NeoPPRs.nextPPR++;
+							NeoPPRs.pprs.put(author, ppr);
+							NeoPPRs.isModifying.put(author, false);
 							ppr.setUser(args[1]);
 							ppr.preview(s);
 						}
 					}
 					else if (args.length == 3 && args[2].equalsIgnoreCase("xray")) {
-						if (Main.pprs.containsKey(author)) {
+						if (NeoPPRs.pprs.containsKey(author)) {
 							s.sendMessage("§4[§c§lMLMC§4] §7You are already creating a PPR! §c/ppr view");
 						}
 						else {
 							main.viewPlayer(s, args[1], true);
 							s.sendMessage("§4[§c§lMLMC§4] §7You entered PPR creation mode!");
-							PPR ppr = new PPR(Main.nextPPR, author);
-							Main.nextPPR++;
-							Main.pprs.put(author, ppr);
-							Main.isModifying.put(author, false);
+							PPR ppr = new PPR(NeoPPRs.nextPPR, author);
+							NeoPPRs.nextPPR++;
+							NeoPPRs.pprs.put(author, ppr);
+							NeoPPRs.isModifying.put(author, false);
 							ppr.setUser(args[1]);
 							ppr.setOffense("Xray");
 							ppr.setAction("Banned");
@@ -100,16 +100,16 @@ public class Commands implements CommandExecutor {
 						}
 					}
 					else if (args.length == 3 && args[2].equalsIgnoreCase("racism")) {
-						if (Main.pprs.containsKey(author)) {
+						if (NeoPPRs.pprs.containsKey(author)) {
 							s.sendMessage("§4[§c§lMLMC§4] §7You are already creating a PPR! §c/ppr view");
 						}
 						else {
 							main.viewPlayer(s, args[1], true);
 							s.sendMessage("§4[§c§lMLMC§4] §7You entered PPR creation mode!");
-							PPR ppr = new PPR(Main.nextPPR, author);
-							Main.nextPPR++;
-							Main.pprs.put(author, ppr);
-							Main.isModifying.put(author, false);
+							PPR ppr = new PPR(NeoPPRs.nextPPR, author);
+							NeoPPRs.nextPPR++;
+							NeoPPRs.pprs.put(author, ppr);
+							NeoPPRs.isModifying.put(author, false);
 							ppr.setUser(args[1]);
 							ppr.setOffense("Racism");
 							ppr.setAction("Banned");
@@ -119,8 +119,8 @@ public class Commands implements CommandExecutor {
 					}
 				}
 				else if (args.length > 1 && args[0].equalsIgnoreCase("offense")) {
-					if (Main.pprs.containsKey(author)) {
-						PPR ppr = Main.pprs.get(author);
+					if (NeoPPRs.pprs.containsKey(author)) {
+						PPR ppr = NeoPPRs.pprs.get(author);
 						String offense = args[1];
 						for (int i = 2; i < args.length; i++) {
 							offense += " " + args[i];
@@ -133,8 +133,8 @@ public class Commands implements CommandExecutor {
 					}
 				}
 				else if (args.length > 1 && args[0].equalsIgnoreCase("action")) {
-					if (Main.pprs.containsKey(author)) {
-						PPR ppr = Main.pprs.get(author);
+					if (NeoPPRs.pprs.containsKey(author)) {
+						PPR ppr = NeoPPRs.pprs.get(author);
 						String action = args[1];
 						for (int i = 2; i < args.length; i++) {
 							action += " " + args[i];
@@ -148,8 +148,8 @@ public class Commands implements CommandExecutor {
 				}
 				else if (args.length > 1
 						&& (args[0].equalsIgnoreCase("description") || args[0].equalsIgnoreCase("desc"))) {
-					if (Main.pprs.containsKey(author)) {
-						PPR ppr = Main.pprs.get(author);
+					if (NeoPPRs.pprs.containsKey(author)) {
+						PPR ppr = NeoPPRs.pprs.get(author);
 						String desc = args[1];
 						for (int i = 2; i < args.length; i++) {
 							desc += " " + args[i];
@@ -162,8 +162,8 @@ public class Commands implements CommandExecutor {
 					}
 				}
 				else if (args.length == 1 && args[0].equalsIgnoreCase("view")) {
-					if (Main.pprs.containsKey(author)) {
-						PPR ppr = Main.pprs.get(author);
+					if (NeoPPRs.pprs.containsKey(author)) {
+						PPR ppr = NeoPPRs.pprs.get(author);
 						ppr.preview(s);
 					}
 					else {
@@ -171,27 +171,27 @@ public class Commands implements CommandExecutor {
 					}
 				}
 				else if (args.length == 1 && args[0].equalsIgnoreCase("cancel")) {
-					if (Main.pprs.containsKey(author)) {
+					if (NeoPPRs.pprs.containsKey(author)) {
 						s.sendMessage("§4[§c§lMLMC§4] §7You exited PPR creation mode!");
-						Main.pprs.remove(author);
-						Main.isModifying.remove(author);
+						NeoPPRs.pprs.remove(author);
+						NeoPPRs.isModifying.remove(author);
 					}
 					else {
 						s.sendMessage("§4[§c§lMLMC§4] §7You are not in PPR creation mode!");
 					}
 				}
 				else if (args.length == 1 && args[0].equalsIgnoreCase("post")) {
-					if (Main.pprs.containsKey(author)) {
-						PPR ppr = Main.pprs.get(author);
+					if (NeoPPRs.pprs.containsKey(author)) {
+						PPR ppr = NeoPPRs.pprs.get(author);
 						if (ppr.isFilled()) {
-							if (Main.isModifying.get(author)) {
+							if (NeoPPRs.isModifying.get(author)) {
 								ppr.modify(s);
 							}
 							else {
 								ppr.post(s);
 							}
-							Main.pprs.remove(author);
-							Main.isModifying.remove(author);
+							NeoPPRs.pprs.remove(author);
+							NeoPPRs.isModifying.remove(author);
 						}
 						else {
 							s.sendMessage("§4[§c§lMLMC§4] §7You must fill every part of the PPR to post!");
@@ -205,14 +205,14 @@ public class Commands implements CommandExecutor {
 					main.viewPlayer(s, args[1], false);
 				}
 				else if (args.length == 2 && args[0].equalsIgnoreCase("modify") && StringUtils.isNumeric(args[1])) {
-					if (Main.pprs.containsKey(author)) {
+					if (NeoPPRs.pprs.containsKey(author)) {
 						s.sendMessage("§4[§c§lMLMC§4] §7You are already creating a PPR! §c/ppr view");
 					}
 					else {
 						int id = Integer.parseInt(args[1]);
 						PPR ppr = null;
 						try {
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs = stmt.executeQuery("SELECT * FROM neopprs_pprs WHERE id = " + id + ";");
 							while (rs.next()) {
@@ -227,8 +227,8 @@ public class Commands implements CommandExecutor {
 						}
 						if (ppr != null) {
 							s.sendMessage("§4[§c§lMLMC§4] §7You entered PPR creation mode!");
-							Main.pprs.put(author, ppr);
-							Main.isModifying.put(author, true);
+							NeoPPRs.pprs.put(author, ppr);
+							NeoPPRs.isModifying.put(author, true);
 							ppr.preview(s);
 						}
 						else {
@@ -239,7 +239,7 @@ public class Commands implements CommandExecutor {
 				else if (args.length == 2 && args[0].equalsIgnoreCase("remove") && StringUtils.isNumeric(args[1])) {
 					int id = Integer.parseInt(args[1]);
 					try {
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 						Statement stmt = con.createStatement();
 						int deleted = stmt.executeUpdate("delete from neopprs_pprs WHERE id = " + id + ";");
 						if (deleted > 0) {
@@ -257,7 +257,7 @@ public class Commands implements CommandExecutor {
 				}
 				else if (args.length == 3 && args[0].equalsIgnoreCase("rename")) {
 					try {
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 						Statement stmt = con.createStatement();
 						int renamed = stmt.executeUpdate("update neopprs_pprs set username = '" + args[2]
 								+ "' WHERE upper(username) = '" + args[1].toUpperCase() + "';");
@@ -279,46 +279,46 @@ public class Commands implements CommandExecutor {
 						String mainAcc = args[2];
 						String altAcc = args[3];
 						try {
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 
 							// Get the UUID of the main account
 							String mainuuid = null;
-							if (Main.uuids.containsKey(mainAcc.toUpperCase())) {
-								Main.uuids.get(mainAcc.toUpperCase());
+							if (NeoPPRs.uuids.containsKey(mainAcc.toUpperCase())) {
+								NeoPPRs.uuids.get(mainAcc.toUpperCase());
 							}
 							else {
 								rs = stmt.executeQuery("SELECT * FROM neopprs_pprs WHERE upper(username) = '"
 										+ mainAcc.toUpperCase() + "';");
 								if (rs.next()) {
 									mainuuid = rs.getString(4);
-									Main.uuids.put(mainAcc.toUpperCase(), mainuuid);
+									NeoPPRs.uuids.put(mainAcc.toUpperCase(), mainuuid);
 								}
 							}
 
 							// Get the UUID of the alt account
 							String altuuid = null;
-							if (Main.uuids.containsKey(altAcc.toUpperCase())) {
-								Main.uuids.get(altAcc.toUpperCase());
+							if (NeoPPRs.uuids.containsKey(altAcc.toUpperCase())) {
+								NeoPPRs.uuids.get(altAcc.toUpperCase());
 							}
 							else {
 								rs = stmt.executeQuery("SELECT * FROM neopprs_pprs WHERE upper(username) = '"
 										+ altAcc.toUpperCase() + "';");
 								if (rs.next()) {
 									altuuid = rs.getString(4);
-									Main.uuids.put(altAcc.toUpperCase(), altuuid);
+									NeoPPRs.uuids.put(altAcc.toUpperCase(), altuuid);
 								}
 							}
 
 							// If either UUID isn't found, just look it up manually
 							if (mainuuid == null) {
 								mainuuid = Bukkit.getServer().getOfflinePlayer(mainAcc).getUniqueId().toString();
-								Main.uuids.put(mainAcc.toUpperCase(), mainuuid);
+								NeoPPRs.uuids.put(mainAcc.toUpperCase(), mainuuid);
 							}
 							if (altuuid == null) {
 								altuuid = Bukkit.getServer().getOfflinePlayer(altAcc).getUniqueId().toString();
-								Main.uuids.put(altAcc.toUpperCase(), altuuid);
+								NeoPPRs.uuids.put(altAcc.toUpperCase(), altuuid);
 							}
 
 							// Check for duplicate
@@ -328,10 +328,10 @@ public class Commands implements CommandExecutor {
 								s.sendMessage("§4[§c§lMLMC§4] §cThis alt account was already added!");
 							}
 							else {
-								stmt.executeUpdate("INSERT INTO neopprs_alts VALUES (" + Main.nextAlt + ",'"
+								stmt.executeUpdate("INSERT INTO neopprs_alts VALUES (" + NeoPPRs.nextAlt + ",'"
 										+ s.getName() + "','" + mainAcc + "','" + mainuuid + "','" + altAcc + "','"
 										+ altuuid + "','" + dateformat.format(new Date()) + "')");
-								Main.nextAlt++;
+								NeoPPRs.nextAlt++;
 								s.sendMessage("§4[§c§lMLMC§4] §7Successfully added alt account!");
 							}
 							con.close();
@@ -346,7 +346,7 @@ public class Commands implements CommandExecutor {
 						String altAcc = args[3];
 
 						try {
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 							Statement stmt = con.createStatement();
 							int deleted = stmt.executeUpdate("delete from neopprs_alts WHERE upper(username) = '"
 									+ mainAcc.toUpperCase() + "' AND upper(altname) = '" + altAcc.toUpperCase() + "';");
@@ -366,28 +366,28 @@ public class Commands implements CommandExecutor {
 					else if (args.length == 3 && args[1].equalsIgnoreCase("list")) {
 						String user = args[2];
 						try {
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 
 							// Get the UUID of the main account
 							String uuid = null;
-							if (Main.uuids.containsKey(user.toUpperCase())) {
-								Main.uuids.get(user.toUpperCase());
+							if (NeoPPRs.uuids.containsKey(user.toUpperCase())) {
+								NeoPPRs.uuids.get(user.toUpperCase());
 							}
 							else {
 								rs = stmt.executeQuery("SELECT * FROM neopprs_alts WHERE upper(username) = '"
 										+ user.toUpperCase() + "';");
 								if (rs.next()) {
 									uuid = rs.getString(4);
-									Main.uuids.put(user.toUpperCase(), uuid);
+									NeoPPRs.uuids.put(user.toUpperCase(), uuid);
 								}
 							}
 
 							// Else just look it up manually
 							if (uuid == null) {
 								uuid = Bukkit.getServer().getOfflinePlayer(user).getUniqueId().toString();
-								Main.uuids.put(user.toUpperCase(), uuid);
+								NeoPPRs.uuids.put(user.toUpperCase(), uuid);
 							}
 
 							ArrayList<String> alts = new ArrayList<String>();

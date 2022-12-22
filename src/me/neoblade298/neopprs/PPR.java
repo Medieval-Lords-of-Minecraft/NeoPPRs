@@ -3,6 +3,7 @@ package me.neoblade298.neopprs;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PPR {
 	private int id;
@@ -41,12 +43,12 @@ public class PPR {
 	@SuppressWarnings("deprecation")
 	public void setUser(String user) {
 		this.user = user;
-		if (Main.uuids.containsKey(user.toUpperCase())) {
-			this.uuid = Main.uuids.get(user.toUpperCase());
+		if (NeoPPRs.uuids.containsKey(user.toUpperCase())) {
+			this.uuid = NeoPPRs.uuids.get(user.toUpperCase());
 		}
 		else {
 			this.uuid = Bukkit.getServer().getOfflinePlayer(user).getUniqueId().toString();
-			Main.uuids.put(user.toUpperCase(), this.uuid);
+			NeoPPRs.uuids.put(user.toUpperCase(), this.uuid);
 		}
 	}
 	
@@ -148,62 +150,78 @@ public class PPR {
 	}
 	
 	public void post(CommandSender s) {
-		try{  
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
-			Statement stmt = con.createStatement();
-			// Post the PPR to SQL
-			stmt.executeUpdate("INSERT INTO neopprs_pprs VALUES (" + id + ",'" + author + "','" + user + "','" + uuid + "','" + date + "','" + offense + "','" + action + "','" + description +"')");
-			
-			// Get all alt accounts together
-			ArrayList<String> accounts = new ArrayList<String>();
-			accounts.add(uuid);
-			ResultSet rs = stmt.executeQuery("SELECT * FROM neopprs_alts WHERE uuid = '" + uuid + "';");
-			while (rs.next()) {
-				accounts.add(rs.getString(6));
-			}
-			
-			// Show all relevant PPRs
-			s.sendMessage("§7§m----------");
-			for (String account : accounts) {
-				rs = stmt.executeQuery("SELECT * FROM neopprs_pprs WHERE uuid = '" + account + "';");
-				while (rs.next()) {
-					PPR temp = new PPR(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
-					temp.show(s);
+		new BukkitRunnable() {
+			public void run() {
+				try{  
+					Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
+					Statement stmt = con.createStatement();
+					// Post the PPR to SQL
+					stmt.executeUpdate("INSERT INTO neopprs_pprs VALUES (" + id + ",'" + author + "','" + user + "','" + uuid + "','" + date + "','" + offense + "','" + action + "','" + description +"')");
+					
+					// Get all alt accounts together
+					ArrayList<String> accounts = new ArrayList<String>();
+					accounts.add(uuid);
+					ResultSet rs = stmt.executeQuery("SELECT * FROM neopprs_alts WHERE uuid = '" + uuid + "';");
+					while (rs.next()) {
+						accounts.add(rs.getString(6));
+					}
+					
+					// Show all relevant PPRs
+					s.sendMessage("§7§m----------");
+					for (String account : accounts) {
+						rs = stmt.executeQuery("SELECT * FROM neopprs_pprs WHERE uuid = '" + account + "';");
+						while (rs.next()) {
+							PPR temp = new PPR(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
+							temp.show(s);
+						}
+					}
+					s.sendMessage("§4[§c§lMLMC§4] §7Successfully posted PPR!");
+					con.close();
+				}
+				catch (SQLIntegrityConstraintViolationException e) {
+					id++;
+					post(s);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					s.sendMessage("§4[§c§lMLMC§4] §7Failed to post PPR!");
 				}
 			}
-			s.sendMessage("§4[§c§lMLMC§4] §7Successfully posted PPR!");
-			con.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			s.sendMessage("§4[§c§lMLMC§4] §cSomething went wrong! Report to neo and don't use the plugin anymore!");
-		}
+		}.runTaskAsynchronously(NeoPPRs.inst());
 	}
 	public void postConsole(CommandSender s) {
-		try{  
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
-			Statement stmt = con.createStatement();
-			// Post the PPR to SQL
-			stmt.executeUpdate("INSERT INTO neopprs_pprs VALUES (" + id + ",'" + author + "','" + user + "','" + uuid + "','" + date + "','" + offense + "','" + action + "','" + description +"')");
-			
-			// Get all alt accounts together
-			ArrayList<String> accounts = new ArrayList<String>();
-			accounts.add(uuid);
-			ResultSet rs = stmt.executeQuery("SELECT * FROM neopprs_alts WHERE uuid = '" + uuid + "';");
-			while (rs.next()) {
-				accounts.add(rs.getString(6));
+		new BukkitRunnable() {
+			public void run() {
+				try{  
+					Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
+					Statement stmt = con.createStatement();
+					// Post the PPR to SQL
+					stmt.executeUpdate("INSERT INTO neopprs_pprs VALUES (" + id + ",'" + author + "','" + user + "','" + uuid + "','" + date + "','" + offense + "','" + action + "','" + description +"')");
+					
+					// Get all alt accounts together
+					ArrayList<String> accounts = new ArrayList<String>();
+					accounts.add(uuid);
+					ResultSet rs = stmt.executeQuery("SELECT * FROM neopprs_alts WHERE uuid = '" + uuid + "';");
+					while (rs.next()) {
+						accounts.add(rs.getString(6));
+					}
+					s.sendMessage("§4[§c§lMLMC§4] §7Successfully posted PPR!");
+					con.close();
+				}
+				catch (SQLIntegrityConstraintViolationException e) {
+					id++;
+					postConsole(s);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					s.sendMessage("§4[§c§lMLMC§4] §7Failed to post PPR!");
+				}
 			}
-			s.sendMessage("§4[§c§lMLMC§4] §7Successfully posted PPR!");
-			con.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			s.sendMessage("§4[§c§lMLMC§4] §cSomething went wrong! Report to neo and don't use the plugin anymore!");
-		}
+		}.runTaskAsynchronously(NeoPPRs.inst());
 	}
 	public void modify(CommandSender s) {
 		try{  
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+			Connection con = DriverManager.getConnection(NeoPPRs.connection, NeoPPRs.sqlUser, NeoPPRs.sqlPass);
 			Statement stmt = con.createStatement();
 			// Post the PPR to SQL
 			stmt.executeUpdate("UPDATE neopprs_pprs SET username = '" + user + "', uuid = '" + uuid + "', offense = '" + offense + "', action = '" + action + "', description = '"
